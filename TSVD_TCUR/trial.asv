@@ -1,0 +1,5 @@
+A = randi([0, 2], 4, 3);
+disp(A);
+[C,U,R]=MAT_CUR(A,1,2);
+tria=C*U*R;
+disp(A-tria);

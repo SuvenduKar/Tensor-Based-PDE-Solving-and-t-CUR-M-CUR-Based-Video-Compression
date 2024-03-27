@@ -1,0 +1,13 @@
+
+
+% Generate random tensor A
+A= randi([1,9],[3,4,5,6]);
+B=randi([3,3,2,2]);
+
+% Display the random tensor
+disp('Random tensor A is:');
+disp(A);
+disp('Random tensor B is: ');
+disp(B);
+disp('Their T product is: ');
+disp(TPRODp(4,A,B));

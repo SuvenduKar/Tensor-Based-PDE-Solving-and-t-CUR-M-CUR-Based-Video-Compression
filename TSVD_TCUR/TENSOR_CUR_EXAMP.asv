@@ -1,0 +1,7 @@
+clc
+clear all
+A = randi([0, 1], [2,2,2]);
+ROW_ORD=[1,1,1];
+COL_ORD=[1,1,1];
+[C,U,R]=TENSOR_CUR(A,ROW_ORD,COL_O);
+disp(A-TPRODp(3,TPRODp(3,C,U),R));
