@@ -7,7 +7,7 @@ function [A_row_sub,indices]=ROW_SAMPLING_ALGO(A,c)
     p=zeros(size(A, 1), 1);
     indices=zeros(c,1);
     t=norm(A, 'fro')^2;
-    for x=1:n
+    for x=1:m
         p(x)=norm( A(x,:), 'fro')^2/t;
     end
     
