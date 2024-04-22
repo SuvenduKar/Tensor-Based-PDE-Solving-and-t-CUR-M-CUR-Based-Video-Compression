@@ -1,0 +1,66 @@
+num_row_col=[50,100,300,500,700,900];
+error_list_mcur=zeros(1,length(num_row_col));
+time_list_mcur=zeros(1,length(num_row_col));
+M=[-1,2,0;0,1,-2;0,0,1];
+for j=1:length(num_row_col)
+    % Define the folder paths
+    imageFolder = 'videoframes';  % Folder containing the images
+    curFolder = sprintf('mcurframes%d',num_row_col(j));    % Folder to save the CUR decomposition results
+    % Create the output folder if it doesn't exist
+    if ~exist(curFolder, 'dir')
+        mkdir(curFolder);
+    end
+
+    % Get a list of image files in the imageFolder
+    imageFiles = dir(fullfile(imageFolder, 'frame_*.png'));
+    % Loop through each image file
+    trial_error=zeros(1,length(imageFiles));
+    trial_time=zeros(1,length(imageFiles));
+    for i = 1:length(imageFiles)
+
+        % Read the image
+        
+        % Read the image
+        %imagePath = fullfile(imageFolder, imageFiles(i).name);
+        %image = imread(imagePath);
+        %image = imresize(image, [256, 256]);
+        
+        image = imread(sprintf('videoframes/frame_%d.png',i));
+
+
+        % Convert the image to double precision
+        image = im2double(image);
+
+        % Get the dimensions of the image
+        %[m, n, ~] = size(image);  % RGB image has three channels
+        
+        % Reshape the image into a matrix where each column represents a pixel
+        %X = reshape(image, [], 3);  % Reshape to m*n-by-3 matrix
+
+      % Apply the TENSOR_TCUR function to perform CUR decomposition
+        tic;
+        [C, U, R] = TENSOR_MCUR(image,M,num_row_col(j),num_row_col(j));
+        
+        result=M_product(M_product(C,U,M),R,M);
+        time=toc;
+        trial_error(i)=frob_norm(result-image)/frob_norm(image);
+        trial_time(i)=time;
+        %result = uint8(result*255);
+        %tensor=result;
+        %curImage = reshape(tensor, size(tensor, 1), size(tensor, 2), size(tensor, 3));
+        % Generate the filename for this iteration
+       
+        curFilename = sprintf('mcur_%d.png', i);
+        % Save the image to a file
+        imwrite(result, fullfile(curFolder, curFilename));  % Save as PNG format
+        %save(fullfile(curFolder, curFilename)); % Save the results
+        %trial_error(i)=frob_norm(result-image)/frob_norm(image);
+    end
+    error_list_mcur(j)=mean(trial_error);
+    time_list_mcur(j)=mean(trial_time);
+end
+disp('Errors are ')
+disp(error_list_mcur)
+disp('CUR decomposition completed and results saved.');
+disp('Time taken:');
+disp(time_list_mcur);
